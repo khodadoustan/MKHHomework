@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        {% if result %}
+            <div class="row">
+                <div class="px-2">
+                    <h1>TinyURL was created!</h1>
+                    <h6>The following URL:</h6>
+                    <p>{{ main_url }}</p>
+                    <h6> has length of {{ main_url | length }} and resulted in the following TinyURL which has length
+                        of {{ result | length }}</h6>
+                    <p>{{ result }}</p>
+                    <p>[<a href="{{ result }}" target="_blank">open in new window</a>][<a href="#">Copy to clipboard</a>]
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto form p-4">
+                <div class="px-2">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <form action="/make" method="post">
+                        <div class="form-group">
+                            <label for="main_url" class="text-dark">Enter a long URL to make tiny:</label>
+                            <input type="text" class="form-control" name="main_url" id="main_url" required
+                                   placeholder="Long URL">
+                        </div>
+                        {% if current_user.is_authenticated %}
+                            <div class="form-group mt-2">
+                                <label for="custom_code" class="text-dark">Custom alias:</label>
+                                <input type="text" class="form-control" id="custom_code" name="custom_code"
+                                       placeholder="Custom alias"/>
+                                <small class="form-text text-muted">May contains letter, numbers, and dashes</small>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="otp" class="text-dark">Protect with password:</label>
+                                <input type="text" class="form-control" id="otp" name="otp"
+                                       placeholder="Protected Password"/>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="expire" class="text-dark">Link expire time (second):</label>
+                                <input type="number" class="form-control" id="expire" name="expire"/>
+                            </div>
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" name="private" id="is_private">
+                                <label class="form-check-label  text-dark" for="is_private">
+                                    Is private link
+                                </label>
+                            </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary mt-2">Make TinyURL!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_authenticated %}
+        {% if user_links|length > 0 %}
+            <div class="p-5">
+                <h3>ShortLinks history</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Long URL</th>
+                        <th scope="col">Short URL</th>
+                        <th scope="col">Redirection Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in user_links %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ row.main_url }}</td>
+                            <td><a href="/{{ row.short_url }}" target="_blank">{{ row.short_url }}</a></td>
+                            <td>{{ row.redirection_count }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
