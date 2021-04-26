@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect
 from flask_login import current_user
 from sqlalchemy.exc import NoResultFound
 
+from models import db, ShortLink
 from utils import set_cache, id_generator, check_key
 
 shortlink_app = Blueprint('shortlink', __name__,
@@ -10,9 +11,6 @@ shortlink_app = Blueprint('shortlink', __name__,
 
 @shortlink_app.route('/')
 def index():
-    from app import db
-    from models import ShortLink
-
     user_links = None
     if current_user.is_authenticated:
         user_links = db.session.query(ShortLink).filter(ShortLink.user == current_user).all()
@@ -22,9 +20,6 @@ def index():
 
 @shortlink_app.route('/make', methods=['POST'])
 def make_short_link():
-    from models import ShortLink
-    from app import db
-
     data = request.form
     custom_code = data.get('custom_code', None)
     expire = data.get('expire', 5 * 60)
@@ -62,9 +57,6 @@ def make_short_link():
 
 @shortlink_app.route('/<short_text>', methods=['GET'])
 def handle_request(short_text):
-    from models import ShortLink
-    from app import db
-
     if check_key(short_text):
         try:
             short_link = db.session.query(ShortLink).filter(ShortLink.short_url == short_text).one()
@@ -82,9 +74,6 @@ def handle_request(short_text):
 
 @shortlink_app.route('/process_otp', methods=['POST'])
 def process_otp():
-    from models import ShortLink
-    from app import db
-
     otp = request.form.get('otp', None)
     short_key = request.form.get('short_link', None)
 

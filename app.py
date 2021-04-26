@@ -1,26 +1,18 @@
-import os
-
-from flask import Flask
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
 
 from auth import auth_app
+from init import create_app
 from main import shortlink_app
+from models import User
 
-app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app = create_app()
+
 app.register_blueprint(shortlink_app)
 app.register_blueprint(auth_app)
-
-db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
-
-from models import User
 
 
 @login_manager.user_loader

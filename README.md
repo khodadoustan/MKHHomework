@@ -1,11 +1,7 @@
 # [MKH Homework Project]
 
-## Quick start
-
-- Clone the repo: `git clone https://github.com/khodadoustan/MKHHomework`.
-- Install requirements: `pip install -r requirements.txt`.
-- Set variable environments: `export APP_SETTINGS=config.Config`.
-- Create database on postgresql and set DATABASE_URL: `export  DATABASE_URL=postgresql:///[DATABASE NAME]`.
-- Active virtualenv and run
-  commands: ` python manage.py db init, python manage.py db migrate, python manage.py db upgrade`.
-- Run project: `python app.py`.
+#### Build and run:
+*   From your preferred dir: `https://github.com/khodadoustan/MKHHomework.git` and then `cd MKHHomework`
+*   Build the images: `docker-compose build`
+*   Start the containers: `docker-compose up`
+*   Hit the browser with `http://127.0.0.1:8000/`

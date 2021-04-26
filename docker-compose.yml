@@ -1,0 +1,32 @@
+version: '3'
+services:
+    web:
+        build: .
+        command: flask run --host=0.0.0.0 --port=8000
+        ports:
+            - 8000:8000
+        environment:
+            - FLASK_APP=app.py
+        env_file:
+            - env.list
+        depends_on:
+            - db
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_USER=homeworkuser
+            - POSTGRES_PASSWORD=homeworkpass
+            - POSTGRES_DB=sample_project
+        ports:
+            - 5433:5432
+        volumes:
+            - flask_homework_data:/var/lib/postgresql/data
+    cache:
+        image: redis
+        command: redis-server --appendonly yes
+        volumes:
+            - redis_data:/data
+
+volumes:
+    flask_homework_data:
+    redis_data:

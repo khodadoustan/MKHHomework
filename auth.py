@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from models import db, User
+
 auth_app = Blueprint('auth', __name__,
                      template_folder='templates')
 
@@ -13,8 +15,6 @@ def login():
 
 @auth_app.route('/login', methods=['POST'])
 def login_post():
-    from models import User
-
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -40,9 +40,6 @@ def logout():
 
 @auth_app.route('/signup', methods=['POST'])
 def signup_post():
-    from models import User
-    from app import db
-
     username = request.form.get('username')
     password = request.form.get('password')
 
