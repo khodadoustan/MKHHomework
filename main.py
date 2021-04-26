@@ -75,15 +75,16 @@ def handle_request(short_text):
 @shortlink_app.route('/process_otp', methods=['POST'])
 def process_otp():
     otp = request.form.get('otp', None)
-    short_key = request.form.get('short_link', None)
+    short_key = request.form.get('short_key', None)
 
     if otp:
         try:
             short_link = db.session.query(ShortLink).filter(ShortLink.short_url == short_key).one()
+            print(otp, flush=True)
             if short_link.otp_code == otp:
                 short_link.redirection_count += 1
                 db.session.commit()
                 return redirect(short_link.main_url, code=302)
         except NoResultFound:
             pass
-    return render_template("errors.html", error='Wrong OTP', short_key=short_key)
+    return render_template("errors.html", error='Wrong Password', short_key=short_key)
