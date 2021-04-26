@@ -32,9 +32,16 @@ def make_short_link():
     # if custom_code and len(custom_code) < 8:
     #     return render_template("index.html", error='Custom code must be 8')
 
-    if custom_code and check_key(custom_code):
-        return render_template("index.html", error='Custom code exist!')
+    if custom_code is not None and check_key(custom_code):
+        return render_template("index.html", error='Custom code exist and enabled!')
+
     if custom_code:
+        try:
+            db.session.query(ShortLink).filter(ShortLink.short_url == custom_code).delete()
+            db.session.commit()
+        except NoResultFound:
+            pass
+
         generated_id = custom_code
     else:
         generated_id = id_generator()
